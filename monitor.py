@@ -86,7 +86,11 @@ async def scrape_area(url: str, page) -> dict[str, str]:
         sold_out = color == "#AAAAAA" or "已售完" in text
         area_name = text.replace("已售完", "").strip()
         if area_name:
-            results[area_name] = "已售完" if sold_out else "有票"
+            status = "已售完" if sold_out else "有票"
+            results[area_name] = status
+            if not sold_out:
+                html = await item.evaluate("el => el.outerHTML")
+                print(f"  [有票 HTML] {html}")
 
     return results
 
